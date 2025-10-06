@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="employeeApp">
+<head>
+  <meta charset="UTF-8">
+  <title>Employee Directory App</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <style>
+    /* General body */
+    body {
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #eef1f5;
+      color: #333;
+    }
+
+    /* App header */
+    header {
+      background: linear-gradient(135deg, #007BFF, #00C6FF);
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .container {
+      padding: 20px;
+      max-width: 500px;
+      margin: auto;
+    }
+
+    /* Search bar styling */
+    .search-box {
+      position: relative;
+      margin-bottom: 20px;
+    }
+    .search-box input {
+      padding: 12px 40px 12px 15px;
+      width: 100%;
+      border: none;
+      border-radius: 25px;
+      font-size: 16px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      outline: none;
+    }
+    .search-box::after {
+      content: "🔍";
+      position: absolute;
+      right: 15px;
+      top: 10px;
+      font-size: 18px;
+      color: #555;
+    }
+
+    /* Employee list */
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    li {
+      background: #fff;
+      padding: 15px;
+      margin-bottom: 12px;
+      border-radius: 12px;
+      border: 1px solid #eee;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    li:hover {
+      background: #f0f8ff;
+      transform: translateY(-3px);
+    }
+
+    /* Details card */
+    .details-card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      margin-top: 20px;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    .details-card h3 {
+      margin-top: 0;
+      color: #007BFF;
+    }
+    .details-card p {
+      margin: 8px 0;
+      font-size: 15px;
+    }
+    .details-card button {
+      background: #007BFF;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 15px;
+      margin-top: 10px;
+      transition: background 0.2s;
+    }
+    .details-card button:hover {
+      background: #0056b3;
+    }
+
+    /* Animation */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body ng-controller="employeeCtrl">
+
+  <header>👨‍💼 Employee Directory</header>
+
+  <div class="container">
+    <!-- Search Bar -->
+    <div class="search-box">
+      <input type="text" ng-model="searchText" placeholder="Search employees...">
+    </div>
+
+    <!-- Employee List -->
+    <ul ng-if="searchText">
+      <li ng-repeat="employee in employees | filter:searchText" ng-click="showDetails(employee)">
+        <strong>{{employee.name}}</strong><br>
+        <span style="color: gray; font-size: 14px;">{{employee.department}}</span>
+      </li>
+    </ul>
+
+    <!-- Employee Details -->
+    <div class="details-card" ng-if="selectedEmployee">
+      <h3>{{selectedEmployee.name}}</h3>
+      <p><strong>Department:</strong> {{selectedEmployee.department}}</p>
+      <p><strong>Email:</strong> {{selectedEmployee.email}}</p>
+      <button ng-click="selectedEmployee=null">Close</button>
+    </div>
+  </div>
+
+  <script>
+    var app = angular.module("employeeApp", []);
+
+    app.controller("employeeCtrl", function($scope) {
+      $scope.employees = [
+        { id: 1, name: "Divyashri Raj", department: "HR", email: "divyashri@example.com" },
+        { id: 2, name: "Rahul Sharma", department: "IT", email: "rahul@example.com" },
+        { id: 3, name: "Anita Singh", department: "Finance", email: "anita@example.com" },
+        { id: 4, name: "Karthik Reddy", department: "Marketing", email: "karthik@example.com" },
+       { id: 5, name: "Priya Mehta", department: "Design", email: "priya@example.com" }, 
+      { id: 6, name: "Sanjay Kumar", department: "Sales", email: "sanjay@example.com" }, 
+      { id: 7, name: "Meena Iyer", department: "Customer Support", email: "meena@example.com" },
+      { id: 8, name: "Ravi Patel", department: "Development", email: "ravi@example.com" }, 
+      { id: 9, name: "Sneha Das", department: "Testing", email: "sneha@example.com" },
+      { id: 10, name: "Arun Nair", department: "Operations", email: "arun@example.com" },
+      { id: 11, name: "Lakshmi Menon", department: "Finance", email: "lakshmi@example.com" },
+     { id: 12, name: "Vikram Chauhan", department: "IT", email: "vikram@example.com" },
+     { id: 13, name: "Neha Kapoor", department: "HR", email: "neha@example.com" },
+    { id: 14, name: "Ajay Verma", department: "Logistics", email: "ajay@example.com" }, 
+    { id: 15, name: "Ritu Bansal", department: "Admin", email: "ritu@example.com" }  
+      ];
+
+      $scope.showDetails = function(employee) {
+        $scope.selectedEmployee = employee;
+      };
+    });
+  </script>
+
+</body>
+</html>
